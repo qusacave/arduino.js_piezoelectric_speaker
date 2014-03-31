@@ -1,0 +1,86 @@
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>piezoelectric speaker</title>
+    <style type="text/css">
+        html {
+            font-size: 32px;
+            background-color: black;
+            color: dddddd;
+        }
+        h1 {
+            font-size: 48px;
+            color: 22ff22;
+        }
+        input {
+            display: inline;
+            vertical-align: middle;
+        }
+	#settings {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+	}
+    </style>
+
+    <script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+    <script type="text/javascript" src="js/kaeru.js"></script>
+    <script type="text/javascript" src="js/turkish.js"></script>
+
+    <script type="text/javascript">
+      var arduino = document.arduino;
+      var DEV_PORT = "/dev/cu.usbmodem641";
+      var outputPin = 13;
+      
+      var playback = function(){
+        var track = document.getElementsByName("track");
+        var index = 0;
+        for(var i=0; i<track.length; ++i){
+            if(track[i].checked){
+                index = i;
+                break;
+            }
+        }
+
+        console.log("checked: " + index);
+
+        switch(index){
+            case 0: kaeru(); break;
+            case 1: turkish(); break;
+        }
+    }
+
+    $(document).ready(function(){
+        arduino.open(DEV_PORT);
+        arduino.pinMode(outputPin, true);
+    });
+
+    function changeDevicePort(){
+        DEV_PORT = $('#devPort').val();
+        arduino.open(DEV_PORT);
+        arduino.pinMode(outputPin, true);
+    };
+
+    </script>
+</head>
+<body>
+  <h1>arduino x piezoelectric speaker</h1>
+  <form name="player">
+    <div align="center">
+      <form name="player">
+        <div align="left">
+          <input type="radio" name="track" value="track01">Five green and speckled frogs.<br>
+          <input type="radio" name="track" value="track02">Terkish March.<br>
+        </div><br>
+        <input type="button" value="Playback" style="font-size:32px" onclick="playback()">
+      </form>
+    </div>
+    
+    <form id="settings" action="javascript:void(0)">
+      Device Port:
+      <input type="text" id="devPort" value="/dev/cu.usbmodem641">
+      <input type="button" value="Change" onclick="changeDevicePort()">
+    </form>
+
+</body>
+</html>
